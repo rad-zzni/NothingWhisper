@@ -12,6 +12,34 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 
+import { useState } from 'react';
+import { Button, Text, View } from 'react-native';
+import { NativeModules } from 'react-native';
+
+const { STTModule } = NativeModules;
+
+export default function App() {
+  const [text, setText] = useState("");
+
+  const start = async () => {
+    await STTModule.startRecording();
+  };
+
+  const stop = async () => {
+    await STTModule.stopRecording();
+    const result = await STTModule.transcribe();
+    setText(result);
+  };
+
+  return (
+    <View>
+      <Button title="Start Recording" onPress={start} />
+      <Button title="Stop & Transcribe" onPress={stop} />
+      <Text>{text}</Text>
+    </View>
+  );
+}
+
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
